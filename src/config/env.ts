@@ -21,7 +21,7 @@ const envSchema = z.object({
 
   // Growatt
   GROWATT_BASE_URL: z.string().url(),
-  GROWATT_EMAIL: z.string().email(),
+  GROWATT_USERNAME: z.string().min(1),
   GROWATT_PASSWORD: z.string().min(1),
 
   // JWT
@@ -39,11 +39,33 @@ const envSchema = z.object({
   SYNC_SITES_INTERVAL_HOURS: z.string().default('24'),
   ALERT_CHECK_INTERVAL_MINUTES: z.string().default('3'),
 
+ 
+  // Resend
+  RESEND_API_KEY: z.string().min(1, 'RESEND_API_KEY is required'),
+  RESEND_FROM_EMAIL: z.string().email().default('onboarding@resend.dev'),
+  RESEND_FROM_NAME: z.string().default('Your App'),
+  FRONTEND_URL: z.string().url().default('http://localhost:5173'),
+
+
+
+
   // Thresholds
   OFFLINE_THRESHOLD_MINUTES: z.string().default('10'),
   BATTERY_LOW_THRESHOLD: z.string().default('20'),
   TEMPERATURE_HIGH_THRESHOLD: z.string().default('65'),
+  CIRCUIT_BREAKER_TIMEOUT: z.string().default('10000'),
+  CIRCUIT_BREAKER_ERROR_THRESHOLD: z.string().default('50'),
+  CIRCUIT_BREAKER_RESET_TIMEOUT: z.string().default('30000'),
 
+
+  WORKER_CONCURRENCY: z.string().default('5'),
+
+
+
+REDIS_HOST: z.string().default('localhost'),
+  REDIS_PORT: z.string().default('6379'),
+  REDIS_PASSWORD: z.string().optional(),
+  REDIS_DB: z.string().default('0'),
   // Email
   SMTP_HOST: z.string(),
   SMTP_PORT: z.string(),
@@ -87,3 +109,5 @@ export const env = {
   isDevelopment: parsedEnv.data.NODE_ENV === 'development',
   isTest: parsedEnv.data.NODE_ENV === 'test',
 };
+
+

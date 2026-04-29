@@ -1,10 +1,9 @@
-/**
- * Supabase Client Configuration
- */
+
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { env } from './env.js';
 import { Database } from '@/types/database.types.js';
+
 
 class SupabaseConfig {
   private static instance: SupabaseClient<Database>;
