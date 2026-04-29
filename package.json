@@ -21,7 +21,7 @@
     "workers:status": "tsx src/scripts/worker-status.ts",
     "queue:retry": "tsx src/scripts/retry-failed-jobs.ts",
     "db:cleanup": "tsx src/scripts/cleanup-old-metrics.ts",
-  "build": "tsc --noEmit && esbuild src/index.ts --outdir=dist"
+  "build": "tsc --noEmit && esbuild src/server.ts --bundle --platform=node --outfile=dist/server.js"
   },
   "keywords": [
     "solar",
