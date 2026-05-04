@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import { supabaseAdmin } from '@/config/supabase.js';
 import { authService } from '../services/auth.service.js';
 
+
+
 class AuthController {
   async inviteEngineer(req: Request, res: Response, next: NextFunction) {
     try {
@@ -138,12 +140,12 @@ class AuthController {
       const adminUserId = req.user!.userId;
       const adminEmail = req.user!.email;
 
-      const { data: invitation, error } = await supabaseAdmin
-        .from('invitations')
-        .select('*')
-        .eq('id', invitationId)
-        .eq('invited_by', adminUserId)
-        .single();
+    const { data: invitation, error } = await supabaseAdmin
+  .from('invitations')   // types flow from database.types.ts automatically
+  .select('*')
+  .eq('id', invitationId)
+  .eq('invited_by', adminUserId)
+  .single();
 
       if (error || !invitation) {
         return res.status(404).json({

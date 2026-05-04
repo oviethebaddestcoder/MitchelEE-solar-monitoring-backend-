@@ -4,7 +4,7 @@ import { AnyZodObject, ZodError } from 'zod';
 import { ValidationError } from '@/utils/errorHandler.js';
 
 export function validateRequest(schema: AnyZodObject) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request, _res: Response, next: NextFunction) => {
     try {
       // Check if schema expects body/query/params wrapper or just body fields
       const schemaShape = schema.shape || {};

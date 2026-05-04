@@ -21,7 +21,7 @@
     "workers:status": "tsx src/scripts/worker-status.ts",
     "queue:retry": "tsx src/scripts/retry-failed-jobs.ts",
     "db:cleanup": "tsx src/scripts/cleanup-old-metrics.ts",
-  "build": "tsc --noEmit && esbuild src/server.ts --bundle --platform=node --outfile=dist/server.js"
+    "build": "esbuild src/server.ts --bundle --platform=node --outfile=dist/server.js --packages=external"
   },
   "keywords": [
     "solar",
@@ -45,7 +45,6 @@
     "ioredis": "^5.9.2",
     "jsonwebtoken": "^9.0.3",
     "node-cron": "^3.0.3",
-    "nodemailer": "^6.10.1",
     "opossum": "^9.0.0",
     "rate-limiter-flexible": "^5.0.5",
     "resend": "^6.12.0",
@@ -61,7 +60,6 @@
     "@types/jsonwebtoken": "^9.0.5",
     "@types/node": "^20.10.6",
     "@types/node-cron": "^3.0.11",
-    "@types/nodemailer": "^6.4.14",
     "@types/opossum": "^8.1.9",
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^6.17.0",
@@ -75,7 +73,6 @@
     "typescript": "^5.3.3"
   },
   "engines": {
-    
     "node": "22.x",
     "npm": ">=9.0.0"
   }

@@ -4,16 +4,16 @@
  */
 
 import { QueueOptions, WorkerOptions } from 'bullmq';
-import { default as Redis } from 'ioredis';
+import { Redis } from 'ioredis';
 import { env } from '@/config/env.js';
 import { logger } from '@/utils/logger.js';
 
 // Redis connection
 export const redisConnection = new Redis({
-  host: env.REDIS_HOST,
-  port: env.REDIS_PORT,
-  password: env.REDIS_PASSWORD || undefined,
-  db: env.REDIS_DB,
+  host:                 env.REDIS_HOST,
+  port:                 parseInt(env.REDIS_PORT),        // ← parse to number
+  password:             env.REDIS_PASSWORD || undefined,
+  db:                   parseInt(env.REDIS_DB),           // ← parse to number
   maxRetriesPerRequest: null,
   retryStrategy(times) {
     const delay = Math.min(times * 50, 2000);
@@ -86,7 +86,7 @@ export const defaultQueueOptions: QueueOptions = {
 // Worker options
 export const defaultWorkerOptions: Partial<WorkerOptions> = {
   connection: redisConnection,
-  concurrency: env.WORKER_CONCURRENCY || 5,
+  concurrency: parseInt(env.WORKER_CONCURRENCY) || 5,
   limiter: {
     max: 10,
     duration: 1000,

@@ -1,4 +1,4 @@
-# í¼ž Solar Inverter Monitoring Platform
+#  Solar Inverter Monitoring Platform
 
 Enterprise-grade solar inverter monitoring system with Growatt API integration.
 

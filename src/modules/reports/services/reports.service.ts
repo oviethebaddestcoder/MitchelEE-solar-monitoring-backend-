@@ -1,12 +1,22 @@
 import { supabaseAdmin } from '@/config/supabase.js';
 
-interface FieldReport {
-  assignment_id: string;
+interface ReportWithDetails {
+  id: string;
   engineer_id: string;
   report: string;
   findings: string | null;
   images: string[];
   created_at: string;
+  engineer_assignments: {
+    id: string;
+    status: string;
+    assigned_at: string;
+    sites: {
+      id: string;
+      name: string;
+      location: string;
+    };
+  };
 }
 
 class ReportsService {
@@ -61,10 +71,11 @@ class ReportsService {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    if (!reports?.length) return [];
+    const typedReports = reports as ReportWithDetails[] | null;
+    if (!typedReports?.length) return [];
 
     // Fetch engineer profiles separately
-    const engineerIds = [...new Set(reports.map(r => r.engineer_id).filter(Boolean))];
+    const engineerIds = [...new Set(typedReports.map(r => r.engineer_id).filter(Boolean))];
     const { data: profiles } = await supabaseAdmin
       .from('profiles')
       .select('id, full_name, phone')
@@ -72,7 +83,7 @@ class ReportsService {
 
     const profileMap = Object.fromEntries((profiles ?? []).map(p => [p.id, p]));
 
-    return reports.map(r => ({
+    return typedReports.map(r => ({
       ...r,
       profiles: profileMap[r.engineer_id] ?? null,
     }));
@@ -115,10 +126,11 @@ class ReportsService {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    if (!reports?.length) return [];
+    const typedReports = reports as ReportWithDetails[] | null;
+    if (!typedReports?.length) return [];
 
     // Step 3: fetch engineer profiles separately
-    const engineerIds = [...new Set(reports.map(r => r.engineer_id).filter(Boolean))];
+    const engineerIds = [...new Set(typedReports.map(r => r.engineer_id).filter(Boolean))];
     const { data: profiles } = await supabaseAdmin
       .from('profiles')
       .select('id, full_name, phone')
@@ -126,7 +138,7 @@ class ReportsService {
 
     const profileMap = Object.fromEntries((profiles ?? []).map(p => [p.id, p]));
 
-    return reports.map(r => ({
+    return typedReports.map(r => ({
       ...r,
       profiles: profileMap[r.engineer_id] ?? null,
     }));

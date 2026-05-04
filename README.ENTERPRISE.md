@@ -1,4 +1,4 @@
-# ��� Solar Inverter Platform - Enterprise Edition
+#  Solar Inverter Platform - Enterprise Edition
 
 ## Architecture Overview
 
@@ -117,11 +117,11 @@ npm run worker
 - Scalability: Limited
 
 ### After (Enterprise Queue)
-- Processing Time: 1-2 minutes ⚡
-- Fault Tolerance: Full ✅
-- Parallel Processing: 5-10 workers ✅
-- Auto Retry: 3 attempts ✅
-- Scalability: 1000+ sites ✅
+- Processing Time: 1-2 minutes 
+- Fault Tolerance: Full 
+- Parallel Processing: 5-10 workers 
+- Auto Retry: 3 attempts 
+- Scalability: 1000+ sites 
 
 ## API Calls Management
 
@@ -141,10 +141,10 @@ npm run queue:monitor
 
 Output:
 ```
-��� Queue Monitoring Dashboard
-════════════════════════════════════════════════════════════════
+ Queue Monitoring Dashboard
 
-��� Queue: site-monitoring
+
+ Queue: site-monitoring
 ├─ Waiting:   180
 ├─ Active:    5
 ├─ Completed: 47
@@ -162,8 +162,8 @@ npm run workers:status
 
 Output:
 ```
-��� Worker Status Dashboard
-════════════════════════════════════════════════════════════════
+ Worker Status Dashboard
+
 ✅ Running - Site Monitoring Worker
 ✅ Running - Site Sync Worker
 ✅ Running - Email Notification Worker
@@ -321,4 +321,4 @@ For issues, check:
 
 ---
 
-**��� Built for enterprise-scale solar monitoring**
+** Built for enterprise-scale solar monitoring**

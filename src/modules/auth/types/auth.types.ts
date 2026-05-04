@@ -7,7 +7,7 @@ export interface LoginRequest {
 export interface InviteEngineerRequest {
   email: string;
   fullName: string;
-  phone?: string;
+   phone?:    string | null;
   role: 'engineer';
 }
 

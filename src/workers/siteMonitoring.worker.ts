@@ -42,8 +42,8 @@ export async function processSiteMonitoring(job: Job<SiteMonitoringJob>): Promis
     }
 
     // Check for critical conditions
-    const hasHighTemp = plantData.temperature && plantData.temperature > env.TEMPERATURE_HIGH_THRESHOLD;
-    const hasLowBattery = plantData.batteryPercentage && plantData.batteryPercentage < env.BATTERY_LOW_THRESHOLD;
+    const hasHighTemp = plantData.temperature && plantData.temperature > Number(env.TEMPERATURE_HIGH_THRESHOLD);
+    const hasLowBattery = plantData.batteryPercentage && plantData.batteryPercentage < Number(env.BATTERY_LOW_THRESHOLD);
     const hasVoltageIssue = plantData.vac1 < 200 || plantData.vac1 > 250;
 
     if (hasHighTemp || hasLowBattery || hasVoltageIssue) {

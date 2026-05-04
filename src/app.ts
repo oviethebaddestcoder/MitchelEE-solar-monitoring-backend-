@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
@@ -23,7 +23,7 @@ app.use(cors({ origin: env.ALLOWED_ORIGINS, credentials: true }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(compression());
-app.use(rateLimiterMiddleware);
+app.use(rateLimiterMiddleware as express.RequestHandler);
 
 // Request logging
 app.use((req, _res, next) => {
@@ -49,7 +49,7 @@ app.use(`/api/${env.API_VERSION}/reports`, reportsRoutes);
 app.use(`/api/${env.API_VERSION}/queue`, queueRoutes);
 
 // Error handler
-app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+const errorHandler: express.ErrorRequestHandler = (err, _req, res, _next) => {
   logger.error('Error:', err);
 
   if (err instanceof AppError) {
@@ -59,11 +59,15 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     });
   }
 
+  const message = err instanceof Error ? err.message : 'Unknown error';
+
   return res.status(500).json({
     success: false,
-    message: env.isProduction ? 'Internal server error' : err.message,
+    message: env.isProduction ? 'Internal server error' : message,
   });
-});
+};
+
+app.use(errorHandler);
 
 // 404 handler
 app.use((req, res) => {

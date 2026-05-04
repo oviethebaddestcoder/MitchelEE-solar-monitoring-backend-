@@ -2,6 +2,10 @@ export interface GrowattPlant {
   plantId: string;
   plantName: string;
   location: string;
+  nominalPower: number;
+  lat: number | null;
+  lng: number | null;
+  eTotal: number;
   status: number;
 }
 
@@ -28,6 +32,12 @@ export interface GrowattPlantData {
   vac1: number;
   batteryPercentage: number | null;
   temperature: number | null;
+  eTotal: number;
+  nominalPower: number;
+  city: string | null;
+  country: string | null;
+  lat: number | null;
+  lng: number | null;
 }
 
 export interface GrowattPlantDataResponse {

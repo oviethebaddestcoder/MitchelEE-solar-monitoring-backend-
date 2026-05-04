@@ -2,7 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { env } from '@/config/env.js';
 import { UnauthorizedError, ForbiddenError } from '@/utils/errorHandler.js';
-import { supabaseAdmin } from '@/config/supabase.js';
+import { logger } from '@/utils/logger.js';
+import { supabaseAdmin } from '@/config/supabase.js'
 
 // Extend Express Request type
 declare module 'express' {
@@ -16,6 +17,7 @@ declare module 'express' {
 }
 
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
+  void res;
   try {
     const authHeader = req.headers.authorization;
     
@@ -33,21 +35,21 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
 
     let userRole = decoded.role;
     if (!userRole) {
-      console.log('⚠️ Role missing from token, fetching from database for user:', decoded.userId);
+      logger.warn('Role missing from token, fetching from database for user: %s', decoded.userId);
       
-      const { data: profile, error } = await supabaseAdmin
-        .from('profiles')
-        .select('role')
-        .eq('id', decoded.userId)
-        .single();
+  const { data: profile, error } = await supabaseAdmin
+  .from('profiles')
+  .select('role')
+  .eq('id', decoded.userId)
+  .single();
       
       if (error || !profile) {
-        console.error('❌ Failed to fetch role from database:', error);
+        logger.error('Failed to fetch role from database: %o', error);
         throw new UnauthorizedError('User profile not found');
       }
       
       userRole = profile.role;
-      console.log('✅ Role fetched from database:', userRole);
+      logger.info('Role fetched from database: %s', userRole);
     }
 
     req.user = {
@@ -57,7 +59,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
       role: (userRole || 'user').toLowerCase(),
     };
     
-    console.log('🔐 Authenticated user:', req.user);
+    logger.info('Authenticated user: %o', req.user);
     next();
   } catch (error) {
     if (error instanceof jwt.JsonWebTokenError) {
@@ -72,8 +74,9 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
 
 export const authorize = (allowedRoles: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    console.log('🔍 Authorizing - User:', req.user);
-    console.log('🔍 Required roles:', allowedRoles);
+    void res;
+    logger.debug('Authorizing - User: %o', req.user);
+    logger.debug('Required roles: %o', allowedRoles);
     
     if (!req.user) {
       return next(new UnauthorizedError('Authentication required'));
@@ -84,11 +87,11 @@ export const authorize = (allowedRoles: string[]) => {
     const allowed = allowedRoles.map(r => r.toLowerCase());
 
     if (!allowed.includes(userRole)) {
-      console.error(`❌ Role "${req.user.role}" not in allowed roles:`, allowedRoles);
+      logger.warn('Role "%s" not in allowed roles: %o', req.user.role, allowedRoles);
       return next(new ForbiddenError('Insufficient permissions'));
     }
 
-    console.log('✅ Authorization passed for role:', req.user.role);
+    logger.info('Authorization passed for role: %s', req.user.role);
     next();
   };
 };

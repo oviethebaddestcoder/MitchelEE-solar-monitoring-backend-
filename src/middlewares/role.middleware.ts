@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ForbiddenError } from '@/utils/errorHandler.js';
 
-export function requireAdmin(req: Request, res: Response, next: NextFunction) {
+export function requireAdmin(req: Request, _res: Response, next: NextFunction) {
   if (req.user?.role !== 'admin') {
     throw new ForbiddenError('Admin access required');
   }

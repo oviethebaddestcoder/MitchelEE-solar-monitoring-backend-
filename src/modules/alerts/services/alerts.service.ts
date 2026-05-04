@@ -21,7 +21,6 @@ class AlertsService {
   }
 
   async getCriticalAlerts() {
-    // Returns ALL unacknowledged alerts so admin sees everything
     const { data, error } = await supabaseAdmin
       .from('alerts')
       .select('*, sites(name, location)')
@@ -39,7 +38,7 @@ class AlertsService {
         acknowledged:    true,
         acknowledged_by: userId,
         acknowledged_at: new Date().toISOString(),
-      })
+      } as never)
       .eq('id', alertId)
       .select()
       .single();

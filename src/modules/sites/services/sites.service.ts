@@ -83,7 +83,7 @@ async getPublicOverview() {
 
   // Calculate total power generation (from last 5 minutes)
   const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
-  const recentMetrics = metrics?.filter(m => m.recorded_at >= fiveMinutesAgo) || [];
+  const recentMetrics = metrics?.filter(m => m.recorded_at && m.recorded_at >= fiveMinutesAgo) || [];
   
   const currentPower = recentMetrics.reduce((sum, m) => {
     // Group by site to avoid double counting

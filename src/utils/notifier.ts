@@ -1,58 +1,31 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import { env } from '@/config/env.js';
 import { logger } from './logger.js';
 
+const resend = new Resend(env.RESEND_API_KEY);
+
 class Notifier {
-  private transporter: nodemailer.Transporter | null = null;
+  private readonly from: string;
 
   constructor() {
-    this.setupTransporter();
-  }
-
-  private setupTransporter() {
-    // Check if email credentials are configured
-    if (!env.SMTP_HOST || !env.SMTP_USER) {
-      logger.warn('⚠️ SMTP not configured. Email notifications will not be sent.');
-      logger.warn('⚠️ Please set SMTP_HOST, SMTP_USER in .env file');
-      return;
-    }
-
-    try {
-      this.transporter = nodemailer.createTransport({
-        host: env.SMTP_HOST,
-        port: env.SMTP_PORT || 587,
-        secure: env.SMTP_SECURE || false,
-        auth: {
-          user: env.SMTP_USER,
-          pass: env.SMTP_PASS,
-        },
-      });
-
-      logger.info('✅ Email transporter configured successfully');
-    } catch (error) {
-      logger.error('❌ Failed to setup email transporter:', error);
-    }
+    this.from = `${env.RESEND_FROM_NAME} <${env.RESEND_FROM_EMAIL}>`;
+    logger.info('✅ Email transporter configured successfully');
   }
 
   async sendEmail(to: string, subject: string, html: string): Promise<void> {
-    if (!this.transporter) {
-      logger.warn(`⚠️ Email not sent (SMTP not configured): ${subject}`);
-      return;
-    }
+    const { error } = await resend.emails.send({
+      from: this.from,
+      to:   [to],
+      subject,
+      html,
+    });
 
-    try {
-      await this.transporter.sendMail({
-        from: env.SMTP_FROM || env.SMTP_USER,
-        to,
-        subject,
-        html,
-      });
-
-      logger.info(`✅ Email sent to ${to}: ${subject}`);
-    } catch (error) {
+    if (error) {
       logger.error(`❌ Failed to send email to ${to}:`, error);
-      throw error;
+      throw new Error(error.message);
     }
+
+    logger.info(`✅ Email sent to ${to}: ${subject}`);
   }
 
   async sendCriticalAlert(emails: string[], message: string): Promise<void> {
@@ -70,7 +43,7 @@ class Notifier {
     for (const email of emails) {
       try {
         await this.sendEmail(email, subject, html);
-      } catch (error) {
+      } catch {
         logger.error(`Failed to send critical alert to ${email}`);
       }
     }
